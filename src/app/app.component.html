@@ -1,4 +1,4 @@
 <div *ngIf="vm$ | async as vm" class="lg:container lg mx-auto m-10">
-  <app-welcome *ngIf="vm.isAuthed" [username]="vm.username " (onLogout)="handleLogout()"></app-welcome>
+  <app-welcome *ngIf="vm.isAuthed" [username]="vm.username" (onLogout)="handleLogout()"></app-welcome>
   <app-login-form *ngIf="!vm.isAuthed" />
 </div>
