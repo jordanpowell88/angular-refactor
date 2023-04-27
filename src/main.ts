@@ -7,7 +7,6 @@ import { LOGIN_FEATURE, loginReducer } from './app/login-form/login.reducer';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
 import { LoginEffects } from './app/login-form/login.effects';
-import { LoginService } from './app/login.service';
 import { provideHttpClient } from '@angular/common/http';
 
 if (environment.production) {

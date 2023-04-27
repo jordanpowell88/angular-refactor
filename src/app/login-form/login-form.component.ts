@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ButtonComponent } from '../button/button.component';
-import { LoginService } from '../login.service';
+import { Component, inject } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { ButtonComponent } from '../button/button.component';
 import { login } from './login.actions';
 import { selectErrorMessage } from './login.selectors';
 

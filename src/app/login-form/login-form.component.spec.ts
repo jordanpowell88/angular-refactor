@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginFormComponent } from './login-form.component';
 import { provideMockStore } from '@ngrx/store/testing';
-import { LOGIN_FEATURE, LoginState } from './login.reducer';
+import { LoginFormComponent } from './login-form.component';
 import { login } from './login.actions';
+import { LoginState } from './login.reducer';
 import { selectErrorMessage } from './login.selectors';
 
 describe('LoginFormComponent', () => {

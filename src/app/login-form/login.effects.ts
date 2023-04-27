@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects'
-import { LoginService } from "../login.service";
+import { LoginService } from "./login.service";
 import { login, loginFailed, loginSuccess } from "./login.actions";
 import { catchError, exhaustMap, map, of, switchMap } from "rxjs";
 
