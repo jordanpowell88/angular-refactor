@@ -14,7 +14,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  private readonly store = inject(Store);
+  readonly store = inject(Store);
   vm$ = this.store.select(selectAppComponentViewModel);
 
 

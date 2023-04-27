@@ -3,6 +3,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { provideMockStore } from '@ngrx/store/testing';
+import { LoginState } from './login-form/login.reducer';
+import { logout } from './login-form/login.actions';
 
 describe('AppComponent', () => {
   let httpClient: HttpClient;
@@ -14,6 +17,11 @@ describe('AppComponent', () => {
         RouterTestingModule,
         AppComponent,
         HttpClientTestingModule,
+      ],
+      providers: [
+        provideMockStore<LoginState>({
+          initialState: { errorMessage: '', isAuthed: false, isLoading: false, username: '' }
+        })
       ]
     }).compileComponents();
 
@@ -31,9 +39,9 @@ describe('AppComponent', () => {
   it('handles logout', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    app.isAuthed = true;
-    app.logout();
-    expect(app.isAuthed).toBeFalsy()
+    const spy = spyOn(app.store, 'dispatch')
+    app.handleLogout();
+    expect(spy).toHaveBeenCalledWith(logout())
   })
 
   it('handles login', () => {
