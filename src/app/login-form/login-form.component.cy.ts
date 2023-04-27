@@ -1,14 +1,11 @@
-import { EventEmitter } from "@angular/core"
-import { FormsModule } from "@angular/forms"
 import { MountConfig } from "cypress/angular"
-import { ButtonComponent } from "../button/button.component"
-import { LoginService } from "../login.service"
+import { ROOT_PROVIDERS } from "src/main"
 import { LoginFormComponent } from "./login-form.component"
+import { login } from "./login.actions"
 
 describe('LoginFormComponent', () => {
     const config: MountConfig<LoginFormComponent> = {
-        imports: [FormsModule],
-        providers: [LoginService]
+      providers: ROOT_PROVIDERS
     } 
     it('can mount', () => {
         cy.mount(LoginFormComponent, config)
@@ -30,7 +27,7 @@ describe('LoginFormComponent', () => {
 
         beforeEach(() => {
             cy.mount(LoginFormComponent, config).then(response => {
-                cy.spy(response.component.onLogin, 'emit').as('onLoginSpy')
+                cy.spy(response.component.store, 'dispatch').as('onLoginSpy')
             })
             cy.contains('Username').find('input').as('usernameInput');
             cy.contains('Password').find('input').as('passwordInput');
@@ -43,7 +40,8 @@ describe('LoginFormComponent', () => {
             cy.get('@loginButton').click()
             cy.get('@onLoginSpy').should('have.been.calledWith', {
                 username,
-                password
+                password,
+                type: login.type
             })
         })
 
@@ -52,7 +50,8 @@ describe('LoginFormComponent', () => {
             cy.get('@passwordInput').type(password).type('{enter}')
             cy.get('@onLoginSpy').should('have.been.calledWith', {
                 username,
-                password
+                password,
+                type: login.type
             })
         })
         

@@ -1,43 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { take } from 'rxjs/operators';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { LoginFormComponent } from './login-form/login-form.component';
-import { LoginService } from './login.service';
+import { login, logout } from './login-form/login.actions';
+import { selectAppComponentViewModel } from './login-form/login.selectors';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 @Component({
   standalone: true,
-  imports: [WelcomeComponent, LoginFormComponent, HttpClientModule, CommonModule],
-  providers: [LoginService],
+  imports: [WelcomeComponent, LoginFormComponent, CommonModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  isAuthed = false
-  errorMessage = '';
-  username = ''
+  private readonly store = inject(Store);
+  vm$ = this.store.select(selectAppComponentViewModel);
 
-  constructor(private readonly loginService: LoginService) {}
 
   handleLogin(username: string, password: string): void {
-    this.errorMessage = '';
-
-    this.loginService.login(username, password).pipe(
-      take(1),
-    ).subscribe((response) => {
-      if (response.status === 200) {
-        this.isAuthed = true
-        this.username = username
-      } else {
-        this.errorMessage = response.message
-      }
-    })
+    this.store.dispatch(login({ username, password }))
   }
 
-  logout(): void {
-    console.log('logout');
-    this.isAuthed = false;
+  handleLogout(): void {
+    this.store.dispatch(logout())
   }
 }

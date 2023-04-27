@@ -16,46 +16,7 @@ describe('LoginService', () => {
       const res = await firstValueFrom(
         loginService.login('bob', 'the builder')
       );
-      expect(res).deep.eq({
-        status: 200,
-        message: 'bob',
-      });
-    });
-  });
-
-  it('should error if 404', async () => {
-    TestBed.configureTestingModule({
-      providers: [LoginService],
-      imports: [HttpClientModule],
-    });
-
-    const loginService = TestBed.inject(LoginService);
-
-    const res = await firstValueFrom(loginService.login('bob', 'the builder'));
-
-    expect(res).deep.eq({
-      status: 404,
-      message: 'error during the auth, status code: 404',
-    });
-  });
-
-  it('should error if 401 bad credentials', () => {
-    cy.intercept('POST', '/auth', { statusCode: 401 }).then(async () => {
-      TestBed.configureTestingModule({
-        providers: [LoginService],
-        imports: [HttpClientModule],
-      });
-
-      const loginService = TestBed.inject(LoginService);
-
-      const res = await firstValueFrom(
-        loginService.login('bob', 'the constructor')
-      );
-
-      expect(res).deep.eq({
-        status: 401,
-        message: 'Bad username or password',
-      });
+      expect(res).to.equal('bob');
     });
   });
 });
