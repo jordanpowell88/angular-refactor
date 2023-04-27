@@ -1,11 +1,9 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { provideMockStore } from '@ngrx/store/testing';
-import { LoginState } from './login-form/login.reducer';
-import { logout } from './login-form/login.actions';
+import { LoginService } from './login.service';
 
 describe('AppComponent', () => {
   let httpClient: HttpClient;
@@ -19,9 +17,7 @@ describe('AppComponent', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        provideMockStore<LoginState>({
-          initialState: { errorMessage: '', isAuthed: false, isLoading: false, username: '' }
-        })
+        LoginService
       ]
     }).compileComponents();
 
@@ -39,21 +35,20 @@ describe('AppComponent', () => {
   it('handles logout', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    const spy = spyOn(app.store, 'dispatch')
-    app.handleLogout();
-    expect(spy).toHaveBeenCalledWith(logout())
+    app.isAuthed = true;
+    app.logout();
+    expect(app.isAuthed).toBeFalsy();
   })
 
   it('handles login', () => {
     const username = 'jordanpowell88'
-    const testData = { message: username, status: 200 };
     httpClient.get('/auth')
       .subscribe(data =>
-        expect(data).toEqual(testData)
+        expect(data).toEqual(username)
       );
     const req = httpTestingController.expectOne('/auth');
     expect(req.request.method).toEqual('GET');
-    req.flush(testData);
+    req.flush(username);
     httpTestingController.verify();
   })
 

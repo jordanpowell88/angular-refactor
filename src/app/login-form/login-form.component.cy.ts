@@ -1,23 +1,17 @@
-import { MountConfig } from "cypress/angular"
-import { ROOT_PROVIDERS } from "src/main"
 import { LoginFormComponent } from "./login-form.component"
-import { login } from "./login.actions"
 
 describe('LoginFormComponent', () => {
-    const config: MountConfig<LoginFormComponent> = {
-      providers: ROOT_PROVIDERS
-    } 
     it('can mount', () => {
-        cy.mount(LoginFormComponent, config)
+        cy.mount(LoginFormComponent)
     })
 
     it('should have password input of type password', () => {
-        cy.mount(LoginFormComponent, config);
+        cy.mount(LoginFormComponent);
         cy.contains('Password').find('input').should('have.attr', 'type', 'password')
     })
 
     it('should render title with default text', () => {
-        cy.mount(LoginFormComponent, config)
+        cy.mount(LoginFormComponent)
         cy.get('legend').should('have.text', 'Log In')
     })
 
@@ -26,8 +20,8 @@ describe('LoginFormComponent', () => {
         const password = 's3cret';
 
         beforeEach(() => {
-            cy.mount(LoginFormComponent, config).then(response => {
-                cy.spy(response.component.store, 'dispatch').as('onLoginSpy')
+            cy.mount(LoginFormComponent).then(response => {
+                cy.spy(response.component.onLogin, 'emit').as('onLoginSpy')
             })
             cy.contains('Username').find('input').as('usernameInput');
             cy.contains('Password').find('input').as('passwordInput');
@@ -40,8 +34,7 @@ describe('LoginFormComponent', () => {
             cy.get('@loginButton').click()
             cy.get('@onLoginSpy').should('have.been.calledWith', {
                 username,
-                password,
-                type: login.type
+                password
             })
         })
 
@@ -50,8 +43,7 @@ describe('LoginFormComponent', () => {
             cy.get('@passwordInput').type(password).type('{enter}')
             cy.get('@onLoginSpy').should('have.been.calledWith', {
                 username,
-                password,
-                type: login.type
+                password
             })
         })
         

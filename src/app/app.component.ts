@@ -1,28 +1,48 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Component } from '@angular/core';
+import { catchError, of, take } from 'rxjs';
 import { LoginFormComponent } from './login-form/login-form.component';
-import { login, logout } from './login-form/login.actions';
-import { selectAppComponentViewModel } from './login-form/login.selectors';
+import { LoginService } from './login.service';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { HttpClientModule, HttpResponse } from '@angular/common/http';
 
 @Component({
   standalone: true,
-  imports: [WelcomeComponent, LoginFormComponent, CommonModule],
+  imports: [WelcomeComponent, LoginFormComponent, CommonModule, HttpClientModule],
   selector: 'app-root',
+  providers: [LoginService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  readonly store = inject(Store);
-  vm$ = this.store.select(selectAppComponentViewModel);
+  isAuthed = false
+  errorMessage = '';
+  username = ''
 
+  constructor(private readonly loginService: LoginService) {}
 
   handleLogin(username: string, password: string): void {
-    this.store.dispatch(login({ username, password }))
+    this.errorMessage = '';
+
+    this.loginService.login(username, password).pipe(
+      take(1),
+      catchError((error: HttpResponse<any>) => {
+        if (error.status === 401) {
+          const message = 'Bad username or password';
+          this.errorMessage = message
+          return of(message)
+        }
+        const message = `error during the auth, status code: ${error.status}`
+        this.errorMessage = message;
+        return of(message)
+      })
+    ).subscribe((response) => {
+      this.isAuthed = true;
+      this.username = response
+    })
   }
 
-  handleLogout(): void {
-    this.store.dispatch(logout())
+  logout(): void {
+    this.isAuthed = false;
   }
 }

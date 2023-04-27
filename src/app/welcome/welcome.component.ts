@@ -1,9 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { ButtonComponent } from '../button/button.component';
-import { Store } from '@ngrx/store';
-import { selectUsername } from '../login-form/login.selectors';
-import { logout } from '../login-form/login.actions';
 import { AsyncPipe } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   standalone: true,
@@ -13,11 +10,6 @@ import { AsyncPipe } from '@angular/common';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent {
-  readonly store = inject(Store)
-  username$ = this.store.select(selectUsername);
-
-
-  handleLogout() {
-    this.store.dispatch(logout())
-  }
+  @Input() username = '';
+  @Output() onLogout = new EventEmitter();
 }
