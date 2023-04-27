@@ -14,12 +14,17 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+import { provideStore } from '@ngrx/store';
 import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
 import { mount } from 'cypress/angular'
+import { provideEffects } from '@ngrx/effects';
+import { provideHttpClient } from '@angular/common/http';
+import { LOGIN_FEATURE, loginReducer } from 'src/app/login-form/login.reducer';
+import { LoginEffects } from 'src/app/login-form/login.effects';
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -33,7 +38,22 @@ declare global {
   }
 }
 
-Cypress.Commands.add('mount', mount)
+type MountParams = Parameters<typeof mount>;
+
+Cypress.Commands.add('mount', (component: MountParams[0], config: MountParams[1] = {}) => {
+  return mount(
+    component,
+    {
+      ...config,
+      providers: [
+        ...(config.providers || []),
+        provideStore({ [LOGIN_FEATURE]: loginReducer }),
+        provideEffects(LoginEffects),
+        provideHttpClient() 
+      ]
+    }
+  )
+})
 
 // Example use:
 // cy.mount(MyComponent)

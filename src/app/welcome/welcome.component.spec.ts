@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WelcomeComponent } from './welcome.component';
-import { ROOT_PROVIDERS } from 'src/main';
 import { provideMockStore } from '@ngrx/store/testing';
 import { LoginState } from '../login-form/login.reducer';
 
@@ -15,7 +14,7 @@ describe('WelcomeComponent', () => {
       providers: [
         provideMockStore<LoginState>({
           initialState: { errorMessage: '', isAuthed: true, isLoading: false, username: 'Test User' }
-        })
+        }),
       ]
     })
     .compileComponents();
