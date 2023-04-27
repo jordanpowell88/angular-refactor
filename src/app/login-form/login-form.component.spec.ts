@@ -24,8 +24,8 @@ describe('LoginFormComponent', () => {
   it('emits onLogin when a username and password is present', () => {
     const username = 'jordanpowell8';
     const password = 'password';
-    component.username = username;
-    component.password = password;
+    component.loginForm.controls.username.setValue(username);
+    component.loginForm.controls.password.setValue(password);
     const onLoginSpy = spyOn(component.onLogin, 'emit');
     
     component.handleFormSubmit();
